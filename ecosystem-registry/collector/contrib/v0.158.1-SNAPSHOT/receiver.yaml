@@ -12792,6 +12792,15 @@ components:
       oracledb.status:
         description: Execution state or result of a database query or session.
         type: string
+      oracledb.tablespace.state:
+        description: Tablespace state as reported by Oracle (e.g. online, offline,
+          read only)
+        enum:
+        - offline
+        - online
+        - read only
+        requirement_level: recommended
+        type: string
       oracledb.transaction.type:
         description: The type of user transaction.
         enum:
@@ -14178,6 +14187,43 @@ components:
           value_type: double
         stability: development
         unit: '{process}'
+      oracledb.tablespace.limit:
+        attributes:
+        - oracle.db.pdb
+        - tablespace_name
+        description: Maximum autoextend size of tablespace in bytes. Returns 0 for
+          temporary tablespaces and tablespaces without autoextend enabled.
+        enabled: false
+        gauge:
+          value_type: int
+        stability: development
+        unit: By
+      oracledb.tablespace.status:
+        attributes:
+        - oracle.db.pdb
+        - oracledb.tablespace.state
+        - tablespace_name
+        description: Current status of tablespaces, broken down by state. A timeseries
+          is produced for every possible value of oracledb.tablespace.state; the value
+          is 1 for a tablespace's current state, and 0 for all other states.
+        enabled: false
+        stability: development
+        sum:
+          aggregation_temporality: cumulative
+          monotonic: false
+          value_type: int
+        unit: '{tablespace}'
+      oracledb.tablespace.utilization:
+        attributes:
+        - oracle.db.pdb
+        - tablespace_name
+        description: Fraction of tablespace currently in use, expressed as a value
+          between 0 and 1.
+        enabled: false
+        gauge:
+          value_type: double
+        stability: development
+        unit: '1'
       oracledb.tablespace_size.limit:
         attributes:
         - oracle.db.pdb
